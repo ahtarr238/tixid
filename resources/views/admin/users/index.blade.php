@@ -14,7 +14,7 @@
             </a>
             <a href="{{ route('admin.users.create') }}" class="btn btn-success me-2">Tambah Staff
             </a>
-            <a href="{{ route('admin.users.trash') }}" class="btn btn-warning"> Recycle Bin
+            <a href="{{ route('admin.users.trash') }}" class="btn btn-warning"> Riwayat
             </a>
         </div>
 

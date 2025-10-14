@@ -14,7 +14,7 @@
         </a>
         <a href="{{ route('staff.promos.create') }}" class="btn btn-success mx-2">Tambah Tambah
         </a>
-        <a href="{{route('staff.promos.trash')}}" class="btn btn-warning"> Recycle Bin
+        <a href="{{route('staff.promos.trash')}}" class="btn btn-warning"> Riwayat
         </a>
     </div>
 

@@ -11,7 +11,7 @@
 
         <div class="d-flex justify-content-end mb-3">
             <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalAdd">Tambah Data</button>
-            <a href="{{ route('staff.schedules.trash') }}" class="btn btn-warning">Recycle Bin</a>
+            <a href="{{ route('staff.schedules.trash') }}" class="btn btn-warning">Riwayat</a>
         </div>
 
         <div class="card">
