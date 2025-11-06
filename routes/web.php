@@ -4,6 +4,7 @@ use App\Http\Controllers\CinemaController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,13 @@ Route::get('/home/movies', [MovieController::class, 'homeAllMovies'])->name('hom
 // })->name('schedules.detail');
 
 Route::get('/schedules/{movie_id}', [MovieController::class, 'movieSchedules'])->name('schedule.detail');
+
+Route::get('/schedules/{scheduleId}/hours/{hourId}/show-seats', [TicketController::class, 'showSeats'])->name('schedules.seats');
+
+// menu "bioskop" pada navbar user ( penggina umum)
+
+Route::get('/cinema/list', [CinemaController::class, 'cinemaList'])->name('cinemas.list');
+Route::get('/cinemas/{cinema_id}/schedules', [CinemaController::class, 'cinemaSchedules'])->name('cinemas.schedules');
 
 Route::middleware('isGuest')->group(function () {
     Route::get('/login', function () {

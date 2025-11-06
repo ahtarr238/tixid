@@ -75,7 +75,7 @@ class MovieController extends Controller
             'genre' => $request->genre,
             'director' => $request->director,
             'age_rating' => $request->age_rating,
-            'poster' => $path, //path ke lokasi file yang disimpan dari storeAs()
+            'poster' => $path,   //path ke lokasi file yang disimpan dari storeAs()
             'description' => $request->description,
             'actived' => 1
         ]);
