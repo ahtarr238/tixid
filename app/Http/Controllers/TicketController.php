@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Promo;
 use App\Models\Ticket;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
@@ -37,11 +38,41 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'user_id' => 'required',
+            'schedule_id' => 'required',
+            'hours' => 'required',
+            'total_price' => 'required',
+            'quantity' => 'required',
+            'rows_of_seats' => 'required',
+        ]);
+
+        $createData = Ticket::create([
+            'user_id' => $request->user_id,
+            'schedule_id' => $request->schedule_id,
+            'hours' => $request->hours,
+            'total_price' => $request->total_price,
+            'quantity' => $request->quantity,
+            'rows_of_seats' => $request->rows_of_seats,
+            'actived' => 0, // kalau uda di bayar baru diubah ke 1 
+            'date' => now(),
+        ]);
+
+        // karena dipanggil di ajax return nya dalam bentuk json
+        return response()->json([
+            'message' => 'Berhasil membuat data tiket',
+            'data' => $createData
+        ]);
     }
 
-    /**
-     * Display the specified resource.
+    public function ticketOrder($ticketId) {
+        $ticket = Ticket::where('id', $ticketId)->with('schedule.movie', 'schedule.cinema')->first();
+        $promos = Promo::where('actived', 1)->get();
+        return view('schedule.order', compact('ticket', 'promos'));
+    }
+
+
+    /**     * Display the specified resource.
      */
     public function show(Ticket $ticket)
     {

@@ -103,6 +103,18 @@
     </nav>
     <!-- Navbar -->
 
+    {{-- @if (Session::get('accessDenied'))
+        <div class="alert alert-danger alert-top-right">
+            {{Session::get('accessDenied')}}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    @endif --}}
+
+        @if (Session::get('accessDenied'))
+        <div class="alert alert-danger alert-top-right">
+            {{Session::get('accessDenied')}}
+        </div>
+    @endif
 
     @yield('content')
     {{-- datatable CDN --}}

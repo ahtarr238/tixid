@@ -34,16 +34,74 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Tambah Data -->
+    <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAddLabel">Tambah Jadwal Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formAdd" action="{{ route('staff.schedules.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="cinema_id" class="form-label">Bioskop</label>
+                            <select class="form-select" id="cinema_id" name="cinema_id" required>
+                                <option value="" selected disabled>Pilih Bioskop</option>
+                                @foreach($cinemas as $cinema)
+                                    <option value="{{ $cinema->id }}">{{ $cinema->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="movie_id" class="form-label">Film</label>
+                            <select class="form-select" id="movie_id" name="movie_id" required>
+                                <option value="" selected disabled>Pilih Film</option>
+                                @foreach($movies as $movie)
+                                    <option value="{{ $movie->id }}">{{ $movie->title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Harga</label>
+                            <input type="number" class="form-control" id="price" name="price" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Jam Tayang</label>
+                            <div id="additionalInput">
+                                <input type="time" name="hours[]" class="form-control mt-2" required>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addInput()">
+                                <i class="fas fa-plus"></i> Tambah Jam
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('script')
     <script type="text/javascript">
         function addInput() {
-            let content = `<input type="time" name="hours[]" class="form-control mt-2">`;
-            // tempat konten akan ditambahkan
-            let wrap = document.querySelector("#additionalInput");
-            //karna nanti akan selalu bertambah, agar yg sebelumnya tidak hilang gunakan : +=
-            wrap.innerHTML += content;
+            let content = `<div class="input-group mt-2">
+                <input type="time" name="hours[]" class="form-control" required>
+                <button type="button" class="btn btn-outline-danger" onclick="removeInput(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>`;
+            document.querySelector("#additionalInput").innerHTML += content;
+        }
+
+        function removeInput(button) {
+            button.closest('.input-group').remove();
         }
 
         $('#schedulesTable').DataTable({
@@ -81,6 +139,13 @@
                     className: 'text-center'
                 }
             ]
+        });
+
+        // Reset form saat modal ditutup
+        document.getElementById('modalAdd').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('formAdd').reset();
+            document.getElementById('additionalInput').innerHTML = 
+                '<input type="time" name="hours[]" class="form-control mt-2" required>';
         });
     </script>
 @endpush

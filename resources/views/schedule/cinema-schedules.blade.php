@@ -1,7 +1,8 @@
 @extends('templates.app')
 
 @section('content')
-    <div class="container my-5 card">
+@if (count($schedules) >=1)
+    <div class="container my-5 card">1
         <a href="{{ route('cinemas.list') }}" class="btn btn-secondary mb-4">Kembali</a>
 
         <div class="card-body">
@@ -58,6 +59,7 @@
             @endforeach
         </div>
     </div>
+@endif
     <div class="w100 fixed-bottom bg-light text-center py-2" id="wrapBtn">
         {{-- javascript:void(0) -> nonaktifkan href --}}
         <a href="javascript:void(0)" id="btnTiket">BELI TIKET</a>

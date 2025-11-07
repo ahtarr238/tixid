@@ -19,7 +19,16 @@ Route::get('/home/movies', [MovieController::class, 'homeAllMovies'])->name('hom
 
 Route::get('/schedules/{movie_id}', [MovieController::class, 'movieSchedules'])->name('schedule.detail');
 
-Route::get('/schedules/{scheduleId}/hours/{hourId}/show-seats', [TicketController::class, 'showSeats'])->name('schedules.seats');
+
+Route::middleware('isUser')->group(function() {
+    Route::get('/schedules/{scheduleId}/hours/{hourId}/show-seats', [TicketController::class, 'showSeats'])->name('schedules.seats');
+
+    Route::prefix('/tickets')->name('tickets.')->group(function() {
+        Route::post('/', [TicketController::class, 'store'])->name('store');
+        Route::get('/{ticketId}/order', [TicketController::class, 'ticketOrder'])->name('order');
+    });
+});
+
 
 // menu "bioskop" pada navbar user ( penggina umum)
 
