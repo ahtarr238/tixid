@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Promo;
 use App\Models\Ticket;
 use App\Models\Schedule;
+use App\Models\TicketPayment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TicketController extends Controller
 {
@@ -71,6 +74,46 @@ class TicketController extends Controller
         return view('schedule.order', compact('ticket', 'promos'));
     }
 
+
+    public function ticketPayment(Request $request) {
+        $kodeBarcode = 'TICKET' . $request->ticket_id;
+
+        $qrImage = QrCode::format('svg')->size(300)->margin(2)->errorCorrection('H')->generate($kodeBarcode);
+        // penamaan file
+        $filename = $kodeBarcode . '.svg';
+        // tempat menyimpan barcode public/barcodes
+        $path = 'barcodes/' . $filename;
+        Storage::disk('public')->put($path, $qrImage);
+
+        $createData = TicketPayment::create([
+            'ticket_id' => $request->ticket_id,
+            'barcode' => $path,
+            'status' => 'process', 
+            'booked_date' => now()
+        ]);
+
+        $ticket = Ticket::find($request->ticket_id);
+        if ($request->promo_id != NULL) {
+            $promo = Promo::find($request->promo_id);
+            if ($promo['type'] == 'percent') {
+                $discount = $ticket['total_price'] * ($promo['discount'] / 100);
+            } else {
+                $discount = $promo['discount'];
+            }
+            $totalPrice = $ticket['total_price'] - $discount;
+        }
+
+        // update total harga dengan setelah menggunakan diskon
+        $updateTicket = Ticket::where('id', $request->ticket_id)->update([
+            'promo_id' => $request->promo_id,
+            'total_price'=> $totalPrice
+        ]);
+
+        return response()->json([
+            'message' => 'Berhasil membuat pesanan tiket sementara!',
+            'data' => $createData
+        ]);
+    }
 
     /**     * Display the specified resource.
      */

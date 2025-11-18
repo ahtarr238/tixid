@@ -26,6 +26,10 @@ Route::middleware('isUser')->group(function() {
     Route::prefix('/tickets')->name('tickets.')->group(function() {
         Route::post('/', [TicketController::class, 'store'])->name('store');
         Route::get('/{ticketId}/order', [TicketController::class, 'ticketOrder'])->name('order');
+        // membuat barkot pembayaran
+        Route::post('/payment', [TicketController::class, 'ticketPayment'])->name('payment');
+        // hlaaman yang menampilkan barkot
+        Route::get('/{ticketId}/payment', [TicketController::class, 'ticketPaymentPage'])->name('payment.page');
     });
 });
 

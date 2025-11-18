@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets');
             $table->string('barcode');
-            $table->enum('statis', ['paid-off', 'process']);
+            $table->enum('status', ['paid-off', 'process']);
             $table->datetime('booked_date');
             $table->datetime('paid_date')->nullable();
             $table->softDeletes();

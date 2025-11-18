@@ -40,7 +40,7 @@
                     <td>Kursi Dipilih :</td>
                     <td style="width: 50px"></td>
                     <td><b> {{ implode(', ', $ticket['rows_of_seats'])}} </b></td> 
-                    {{-- implode : array jadi strin gdipisahkan dengan tanda ', ' --}}
+                    {{-- implode : array jadi string dipisahkan dengan tanda ', ' --}}
                 </tr>
                 <tr>
                     <td>Harga Tiket :</td>
@@ -55,12 +55,49 @@
                 </tr>
             </table>
             <p>Gunakan Promo :</p>
-            <select name="promo_id" id="promo_id" class="form-select">
-                @foreach ($promos as $promo )
-                    <option value="{{$promo['id']}}"> {{$promo['promo_code']}} - {{$promo['type'] == 'percent' ? $promo['discount'] . '%' : 'Rp.' . number_format($promo['discount'], 0, ',', '.')  }} </option>
-                @endforeach
+            <select name="promo_id" id="promo_id" class="form-select" onchange="selectPromo(this)">
+                @if (count($promos) < 1)
+                    <option disabled hidden selected>Tidak ada promo aktif saat ini</option>
+                    @else
+                    <option disabled hidden selected>Pilih promo</option>
+                    @foreach ($promos as $promo )
+                        <option value="{{$promo['id']}}"> {{$promo['promo_code']}} - {{$promo['type'] == 'percent' ? $promo['discount'] . '%' : 'Rp.' . number_format($promo['discount'], 0, ',', '.')  }} </option>
+                    @endforeach
+                @endif
             </select>
         </div>
     </div>
-    <div class="fixed-bottom w-100 p-2 text-center" style="background: #112646; color:white;" >BAYAR SEKARANG</div>
+    <input type="hidden" id="ticket_id" name="ticket_id" value="{{ $ticket['id']}}">
+    <div class="fixed-bottom w-100 p-2 text-center" style="background: #112646; color:white; cursor:pointer;" onclick="createQR()">BAYAR SEKARANG</div>
 @endsection
+
+@push('script')
+    <script>
+        let promoId = null;
+        function selectPromo(element) {
+            // isi nilai promo dari value select
+            promoId = element.value;
+        }
+
+        function createQR() {
+            let data = {
+            _token: "{{csrf_token()}}",
+            promo_id: promoId,
+            ticket_id: $("#ticket_id").val()
+            }
+            $.ajax({
+                url: "{{ route('tickets.payment')}}",
+                type: "POST",
+                data: data,
+                success: function(response){
+                    const ticketId = response.data.ticket_id;
+                    window.location.href = `/tickets/${ticketId}/payment`
+                },
+                error: function(xhr) {
+                    alert("Terjadi kesalahan saat mengirim data!");
+                    console.error(xhr.responseText);
+                }
+            })
+        }
+    </script>
+@endpush
