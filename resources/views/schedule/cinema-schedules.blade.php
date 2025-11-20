@@ -2,7 +2,7 @@
 
 @section('content')
 @if (count($schedules) >=1)
-    <div class="container my-5 card">1
+    <div class="container my-5 card">
         <a href="{{ route('cinemas.list') }}" class="btn btn-secondary mb-4">Kembali</a>
 
         <div class="card-body">

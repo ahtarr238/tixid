@@ -24,12 +24,17 @@ Route::middleware('isUser')->group(function() {
     Route::get('/schedules/{scheduleId}/hours/{hourId}/show-seats', [TicketController::class, 'showSeats'])->name('schedules.seats');
 
     Route::prefix('/tickets')->name('tickets.')->group(function() {
+        Route::get('/', [TicketController::class, 'index'])->name('index');
+        
         Route::post('/', [TicketController::class, 'store'])->name('store');
         Route::get('/{ticketId}/order', [TicketController::class, 'ticketOrder'])->name('order');
         // membuat barkot pembayaran
         Route::post('/payment', [TicketController::class, 'ticketPayment'])->name('payment');
         // hlaaman yang menampilkan barkot
         Route::get('/{ticketId}/payment', [TicketController::class, 'ticketPaymentPage'])->name('payment.page');
+        Route::patch('/{ticketId}/payment/proof', [TicketController::class, 'paymentProof'])->name('payment.proof');
+        Route::get('/{ticketId}/receipt', [TicketController::class, 'ticketReceipt'])->name('receipt');
+        Route::get('/{ticketId}/pdf', [TicketController::class, 'exportPdf'])->name('export_pdf');
     });
 });
 
@@ -69,6 +74,7 @@ Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 //middelware : Authorization, pengaturan hak akses pengguna
 
 Route::middleware('isAdmin')->prefix('/admin')->name('admin.')->group(function () {
+    Route::get('/tickets/chart', [TicketController::class, 'chartData'])->name('tickets.chart');
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
@@ -110,6 +116,7 @@ Route::middleware('isAdmin')->prefix('/admin')->name('admin.')->group(function (
     });
 
     Route::prefix('/movies')->name('movies.')->group(function() {
+        Route::get('chart', [MovieController::class, 'chartData'])->name('chart');
         Route::get('/', [MovieController::class, 'index'])->name('index');
         Route::get('/create', [MovieController::class, 'create'])->name('create');
         Route::post('/store', [MovieController::class, 'store'])->name('store');

@@ -22,6 +22,15 @@ class MovieController extends Controller
         return view('admin.movie.index', compact('movies'));
     }
 
+    public function chartData() {
+        $movieActive = Movie::where('actived', 1)->count();
+        $movieNonActive = Movie::where('actived', 0)->count();
+        // karna chart hanya perlu jumlah jadi hitug dengan count
+        $data = [$movieActive, $movieNonActive];
+        return response()->json([
+            'data' => $data
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      */

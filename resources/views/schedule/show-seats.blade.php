@@ -35,13 +35,22 @@
                 <div class="d-flex justify-content-center w-100">
                     @foreach ($col as $nomorKursi)
                         {{-- Jika kursi nomor 7 kasi space kosong untuk jalan kursi --}}
-                        @if ($nomorKursi == 7 )
+                        @if ($nomorKursi == 7)
                             <div style="width: 45px"></div>
                         @endif
-                        <div style="background: #112646; color:white; text-align:center; padding-top:8px; width:40px; height:40px; border-radius: 8px; margin:5px"
-                            onclick="selectedSeat('{{ $schedule->price }}', '{{ $baris }}', '{{ $nomorKursi }}', this)">
-                            {{ $baris }}-{{ $nomorKursi }}
-                        </div>
+                        @php
+                            $seats = $baris . '-' . $nomorKursi;
+                        @endphp
+                        @if (in_array($seats, $seatsFormat))
+                            <div  style="background: #eaeaea; color:black;  text-align:center; padding-top:8px; width:40px; height:40px; border-radius: 8px; margin:5px">
+                                {{ $baris }}-{{ $nomorKursi }}
+                            </div>
+                        @else
+                            <div style="background: #112646; color:white; text-align:center; padding-top:8px; width:40px; height:40px; border-radius: 8px; margin:5px"
+                                onclick="selectedSeat('{{ $schedule->price }}', '{{ $baris }}', '{{ $nomorKursi }}', this)">
+                                {{ $baris }}-{{ $nomorKursi }}
+                            </div>
+                        @endif
                     @endforeach
                 </div>
             @endforeach
@@ -59,7 +68,7 @@
                 <h5 id="seats">Belum dipilih</h5>
             </div>
         </div>
-        <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id}}">
+        <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}">
         <input type="hidden" name="schedule_id" id="schedule_id" value="{{ $schedule->id }}">
         <input type="hidden" name="hours" id="hours" value="{{ $hour }}">
         <div class="text-center w-100 p-2" style="cursor: pointer;color:black;" id="btnOrder"><b>RINGKASAN ORDER</b></div>
@@ -71,6 +80,7 @@
         // menyimpan data kursi yang dipilih 
         let seats = [];
         let totalPrice = 0;
+
         function selectedSeat(price, baris, nomorKursi, element) {
             // buat A-1
             let seat = baris + "-" + nomorKursi;
@@ -105,7 +115,7 @@
             } else {
                 btnOrder.style.background = '';
                 btnOrder.style.color = '';
-                btnOrder.onclick = null ;
+                btnOrder.onclick = null;
             }
         }
 
